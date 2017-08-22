@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Input think</title>
+	<style>
+		html{
+			height: 100%;
+		}
+		body{
+			display: flex;
+			align-items: center;
+			height: 100%;
+		}
+		.title{
+			text-align: center;
+		}
+		.searchBox{
+			margin: 0 auto;
+			width: 500px;
+			/*text-align: center;*/
+		}
+		.input_box{
+			width: 500px;
+			padding: 10px;
+			line-height: 20px;
+			font-size: 15px;
+			box-sizing: border-box;
+		}
+		.input_list{
+			width: 100%;
+			width: 500px;
+		}
+		.input_list ul{
+			list-style-type: none;
+            -webkit-padding-start: 0;
+		}
+		.input_list li{
+			margin: 10px 0;
+			padding: 10px 5px;
+		}
+		.input_list ul li:hover{
+			background-color:rgba(0,0,0,0.1);
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<div class="searchBox">
+		<div class="title">
+			<h4>Search</h4>
+		</div>
+		<form action="#" method="GET" onsubmit="return redirectUrl();">
+			<input class = "input_box" type="text" placeholder="your text" id="input_text" autocomplete="off">
+		</form>
+		<div class="input_list">
+			<ul id="related_lists">
+			</ul>
+		</div>
+	</div>
+	<script type="text/javascript">
+		var nums = [];
+		function initData(){
+			nums.push("Alice");
+			nums.push("Biob");
+			nums.push("Calie");
+			nums.push("Eoie");
+			nums.push("Franki");
+		}
+		initData();
+		var it = document.querySelector("#input_text");
+		it.addEventListener("keyup", function(event){
+			var text = this.value;
+			if(text.trim().length > 0){
+				var in_arr = [];
+				nums.forEach(function(item){
+					var inTag = item.toLowerCase().indexOf(text.toLowerCase());
+					if(inTag >= 0){
+						in_arr.push(item);
+					}
+				});
+				console.log(in_arr);
+				var r_list = document.querySelector("#related_lists");
+				r_list.innerHTML = "";
+				
+				while(r_list.hasChildNodes()){
+					r_list.removeChild(r_list.firstChild);
+				};
+				if(in_arr.length > 0){
+					r_list.style.border = "1px solid black";
+				}else{
+					r_list.style.border = "none";
+				}
+				in_arr.forEach(function(item){
+					var node = document.createElement("li");
+					var textNode = document.createTextNode(item);
+					node.appendChild(textNode);
+					r_list.appendChild(node);
+				});
+
+			}else{
+				var r_list = document.querySelector("#related_lists");
+				r_list.innerHTML = "";
+				r_list.style.border = "none";
+			}
+		});
+		var related_lists = document.querySelector("#related_lists");
+		related_lists.addEventListener("click", function(event){
+			if(event.target.nodeName.toLowerCase() == "li"){
+				var input_text = document.querySelector("#input_text");
+				input_text.value = event.target.innerHTML;
+			}
+		});
+		function redirectUrl(){
+			var input_text = document.querySelector("#input_text");
+			var val = input_text.value;
+			var target = "https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=0&rsv_idx=1&tn=baidu&wd=" + val;
+			window.location.href = target;
+			console.log("xxx");
+			return false;
+		}
+	</script>
+</body>
+</html>
