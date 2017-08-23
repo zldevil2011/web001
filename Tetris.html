@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>俄罗斯方块</title>
+	<style type="text/css">
+		.item{
+			width: 15px;
+			height: 15px;
+			border: 5px solid green;
+		}
+		.line_item{
+			float: left;
+		}
+		.vertical_line_item{
+
+		}
+		.l_item_bottom{
+			float: left;
+		}
+		.reverse_l_item_bottom{
+			float: left;
+		}
+		#container_box{
+			width: 500px;
+			height: 600px;
+			border: 10px solid blue;
+		}
+		.drap_item{
+			position: relative;
+			top:0;
+			left: 0;	
+			overflow: hidden;
+			display: inline-block;
+		}
+	</style>
+</head>
+<body>
+<div id="container_box">
+</div>
+<script type="text/x-template" id="line_item">
+	<div class="item line_item"></div>
+	<div class="item line_item"></div>
+	<div class="item line_item"></div>
+</script>
+<script type="text/x-template" id="vertical_line_item">
+	<div class="item vertical_line_item"></div>
+	<div class="item vertical_line_item"></div>
+	<div class="item vertical_line_item"></div>
+</script>
+<script type="text/x-template" id="l_shape">
+	<div class="item"></div>
+	<div>
+		<div class="item l_item_bottom"></div>
+		<div class="item l_item_bottom"></div>
+	</div>
+</script>
+<script type="text/x-template" id="reverse_l_shape">
+	<div class="item" style="left: 25px;position: relative;"></div>
+	<div>
+		<div class="item reverse_l_item_bottom"></div>
+		<div class="item reverse_l_item_bottom"></div>
+	</div>
+</script>
+<script type="text/javascript">
+	function getNewShape(){
+		let idx = parseInt(Math.random()*4);
+		let shapeArr = ["line_item", "vertical_line_item", "l_shape", "reverse_l_shape"];
+		let shape = shapeArr[idx];
+		console.log(shape);
+		return shape;
+	};
+
+	var top_num = 0;
+	var left_num = 200;
+	var rotate = 0;
+	var st;
+	var item_num = -1;
+	start();
+	function start(){
+		left_num = 200;
+		top_num = 0;
+		rotate = 0;
+		item_num += 1;
+		var container_box = document.querySelector("#container_box");
+		var line_item = document.querySelector("#" + getNewShape());
+		line_item = line_item.innerHTML;
+		var div_item = document.createElement("div");
+		div_item.className = "drap_item";
+		div_item.innerHTML = line_item;
+		div_item.id="target" + item_num;
+		div_item.style.top = 0;
+		div_item.style.left = "200px";
+		div_item.style.position = "absolute";
+		container_box.appendChild(div_item);
+		down_down(item_num);
+	};
+	function down_down(item_num_idx){
+		st = setTimeout(function(){
+			var node = document.querySelector("#target" + item_num_idx);
+			if(!checkStatus(node)){
+				return;
+			}
+			node.style.top = (top_num + "px");
+			top_num += 25;
+			node.style.left = (left_num + "px");
+			down_down(item_num_idx);
+		}, 400);
+	}
+	
+	function checkStatus(ele){
+		let node_id = parseInt(ele.id.slice(6));
+		let l1=ele.offsetLeft;
+		let r1=ele.offsetLeft+ele.offsetWidth;
+		let t1=ele.offsetTop;
+		let b1=ele.offsetTop+ele.offsetHeight;
+		for(let i = 0; i < node_id; ++i){
+			let oDiv2 = document.querySelector("#target" + i);
+			let l2=oDiv2.offsetLeft;
+			let r2=oDiv2.offsetLeft+oDiv2.offsetWidth;
+			let t2=oDiv2.offsetTop;
+			let b2=oDiv2.offsetTop+oDiv2.offsetHeight;
+			if(r1<=l2 || l1>=r2 || b1<t2 || t1>b2){
+				// console.log("Normal");
+			}
+			else{
+				clearTimeout(st);
+				// ele.id = "";
+				start();
+				return false;
+			}
+		}
+		var left = ele.style.left;
+		var top = ele.style.top;
+		if(b1 == 600){
+			clearTimeout(st);
+			start();
+			return false;
+		}
+		return true;
+	}
+
+	document.onkeydown=function(e){
+		var node = document.querySelector("#target" + item_num);
+		if(!checkStatus(node)){
+			console.log("onKeyDown return");
+			return;
+		}
+		e = window.event || e;
+		switch(e.keyCode){
+			case 37:
+				if(left_num >= 25){
+					left_num -= 25
+				}
+				break;
+			case 38:
+				//上 旋转
+				rotate += 90;
+				node.style.transform = "rotate(" + rotate + "deg)";
+				break
+			case 39:
+				if(left_num <= 475){
+					left_num += 25;
+				}
+				break;
+			case 40:
+				if(top_num <= 550){
+					top_num += 25;
+				}
+				break;
+			default:
+				break;
+		}
+	}
+</script>
+</body>
+</html>
