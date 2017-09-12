@@ -1,0 +1,202 @@
+<!Doctype html>
+<html>
+<head>
+	<meta charset="utf8">
+	<title></title>
+	<style>
+		body{
+			overflow: hidden;
+		}
+		.container{
+			width: 800px;
+			position: absolute;
+			left: 50%;
+			top:50%;
+			transform: translate(-50%,-50%);
+		}
+		.container ul{
+			padding: 0;
+		}
+		.container li{
+			list-style-type: none;
+			/*cursor:pointer;*/
+			padding: 10px 0;
+		}
+		.left-box li.active{
+			background-color: rgba(162, 217, 184, 0.3);
+		}
+		.right-box li.active{
+			background-color: rgba(217, 162, 162, 0.3);
+		}
+		.left-box, .middle-btn, .right-box{
+			display: inline-block;
+			height: 402px;
+			overflow: scroll;
+		}
+		.left-box, .right-box{
+			border: 1px dotted gray;
+			width: 200px;
+			text-align: center;
+		}
+		.middle-btn{
+			overflow: hidden;
+			width: 200px;
+			border: 1px dotted red;
+		}
+		.add-btn, .delete-btn{
+			display: block;
+			width: 80%;
+			margin:10px auto;
+			padding: 3px;
+			border-radius: 15px;
+			border:0;
+			outline: none;
+			cursor: pointer;
+		}
+		.add-btn{
+			margin-top: 160px;
+			background-color: green;
+		}
+		.add-btn:active{
+			background-color: rgba(0, 128, 0, 0.4);
+		}
+		.delete-btn{
+			background-color: red;
+		}
+		.delete-btn:active{
+			background-color: rgba(128, 0, 0, 0.4);
+		}
+		#footer-tip{
+			background-color: red;
+			position: absolute;
+			right: -150px;
+			bottom: 0;
+			padding: 20px;
+			transition: 1s;
+		}
+		#footer-tip.active{
+			right: 0;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		 <div class="left-box" ondrop="dropForUnselected(event)" ondragover="allowDrop(event)">
+		 	<ul class="unselected-container">
+		 		<li class="active" draggable="true" id="u1" ondragstart="drag(event)">条目一</li>
+		 		<li draggable="true" id="u2" ondragstart="drag(event)">条目二</li>
+		 		<li draggable="true" id="u3" ondragstart="drag(event)">条目三</li>
+		 		<li draggable="true" id="u4" ondragstart="drag(event)">条目四</li>
+		 		<li draggable="true" id="u5" ondragstart="drag(event)">条目五</li>
+		 		<li draggable="true" id="u6" ondragstart="drag(event)">条目六</li>
+		 		<li draggable="true" id="u7" ondragstart="drag(event)">条目七</li>
+		 		<li draggable="true" id="u8" ondragstart="drag(event)">条目八</li>
+		 		<li draggable="true" id="u9" ondragstart="drag(event)">条目九</li>
+		 	</ul>
+		 </div>
+		 <div class="middle-btn">
+		 	<button class="add-btn">添加</button>
+		 	<button class="delete-btn">移除</button>
+		 </div>
+		 <div class="right-box" ondrop="dropForSelected(event)" ondragover="allowDrop(event)">
+		 	<ul class="selected-container">
+			 	
+	 		</ul>
+		 </div>
+	</div>
+	<div id="footer-tip">
+		角落的提示
+	</div>
+	<script type="text/javascript">
+		function allowDrop(e){
+			e.preventDefault();
+		}
+		function drag(e){
+			e.dataTransfer.setData("Text", e.target.id);
+		}
+		function dropForSelected(e){
+			console.log("yes");
+			e.preventDefault();
+			var data = e.dataTransfer.getData("Text");
+			var t = document.querySelector(".right-box")
+			var dest = t.getElementsByTagName("ul")[0];
+			dest.appendChild(document.querySelector("#" + data));
+			dest.childNodes.forEach(function(item){
+				item.className = "";
+			});
+		}
+		function dropForUnselected(e){
+			console.log("yes");
+			e.preventDefault();
+			var data = e.dataTransfer.getData("Text");
+			var t = document.querySelector(".left-box")
+			var dest = t.getElementsByTagName("ul")[0];
+			dest.appendChild(document.querySelector("#" + data));
+			dest.childNodes.forEach(function(item){
+				item.className = "";
+			});
+		}
+		function init(){
+			var unselectedContainer = document.querySelector(".unselected-container");
+			unselectedContainer.addEventListener("click", function(e){
+				if(e.target.tagName.toUpperCase() == "LI"){
+					e.target.parentNode.childNodes.forEach(function(item){
+						item.className = "";
+					});
+					e.target.className = "active";
+				}
+			}, false);
+
+			var selectedContainer = document.querySelector(".selected-container");
+			selectedContainer.addEventListener("click", function(e){
+				if(e.target.tagName.toUpperCase() == "LI"){
+					e.target.parentNode.childNodes.forEach(function(item){
+						item.className = "";
+					});
+					e.target.className = "active";
+				}
+			}, false);
+
+			function itemHide(ele){
+				ele.className = "";
+			}
+			function _showTip(ele){
+				return function(){
+					itemHide(ele);
+				}
+			}
+			var addBtn = document.querySelector(".add-btn");
+			addBtn.addEventListener("click", function(){
+				var item = document.querySelector(".unselected-container").querySelector(".active");
+				console.log(item);
+				if(item == null){
+					var tipContainer = document.querySelector("#footer-tip");
+					tipContainer.innerHTML = "没有选择的项";
+					tipContainer.className = "active";
+					setTimeout(_showTip(tipContainer), 1000);
+					return;
+				}else{
+					item.className = "";
+					document.querySelector(".selected-container").append(item);
+				}
+			});
+			var deleteBtn = document.querySelector(".delete-btn");
+			deleteBtn.addEventListener("click", function(){
+				var item = document.querySelector(".selected-container").querySelector(".active");
+				console.log(item);
+				if(item == null){
+					var tipContainer = document.querySelector("#footer-tip");
+					tipContainer.innerHTML = "没有选择的项";
+					tipContainer.className = "active";
+					setTimeout(_showTip(tipContainer), 1000);
+					return;
+				}else{
+					item.className = "";
+					document.querySelector(".unselected-container").append(item);
+				}
+			});
+		}
+		init();
+	</script>
+</body>
+</html>
