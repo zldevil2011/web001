@@ -197,6 +197,136 @@
 			});
 		}
 		init();
+		document.onkeydown = function(e){
+			console.log(e.keyCode);
+			switch(e.keyCode){
+				case 37:
+					//左键
+					//左键判断是否右边选择栏有选中的选项，有则换到左边去
+					var item = document.querySelector(".selected-container").querySelector(".active");
+					if(item != null){
+						item.className = "";
+						document.querySelector(".unselected-container").append(item);
+					}
+					break
+				case 38:
+					//上键
+					var item2 = document.querySelector(".selected-container").querySelector(".active");
+					var item1 = document.querySelector(".unselected-container").querySelector(".active");
+					if(item1 != null && item2 != null){
+						//两边都有激活态，则至移动左边的active状态。
+						item2.className = "";
+						item1.parentNode.childNodes.forEach(function(item){
+							item.className = "";
+						});
+						while(item1.previousSibling){
+							if(item1.previousSibling.nodeType != 1){
+								item1 = item1.previousSibling;
+							}else{
+								item1.previousSibling.className = "active";
+								break;
+							}
+						}
+					}else if(item1 != null){
+						item1.parentNode.childNodes.forEach(function(item){
+							item.className = "";
+						});
+						while(item1.previousSibling){
+							console.log(item1.previousSibling);
+							if(item1.previousSibling.nodeType != 1){
+								item1 = item1.previousSibling;
+							}else{
+								item1.previousSibling.className = "active";
+								break;
+							}
+						}
+					}else if(item2 != null){
+						item2.parentNode.childNodes.forEach(function(item){
+							item.className = "";
+						});
+						while(item2.previousSibling){
+							if(item2.previousSibling.nodeType != 1){
+								item2 = item2.previousSibling;
+							}else{
+								item2.previousSibling.className = "active";
+								break;
+							}
+						}
+					}else{
+						var item1 = document.querySelector(".unselected-container").getElementsByTagName("li")[0];
+						if(item1 != null){
+							item1.className = "active";
+						}else{
+							var item2 = document.querySelector(".selected-container").getElementsByTagName("li")[0];
+							item2.className = "active";
+						}
+					}
+					break
+				case 39:
+					//右键
+					//右键判断是否左边选择栏有选中的选项，有则换到右边去
+					var item = document.querySelector(".unselected-container").querySelector(".active");
+					if(item != null){
+						item.className = "";
+						document.querySelector(".selected-container").append(item);
+					}
+					break
+				case 40:
+					//下键
+					var item2 = document.querySelector(".selected-container").querySelector(".active");
+					var item1 = document.querySelector(".unselected-container").querySelector(".active");
+					if(item1 != null && item2 != null){
+						//两边都有激活态，则至移动左边的active状态。
+						item2.className = "";
+						item1.parentNode.childNodes.forEach(function(item){
+							item.className = "";
+						});
+						while(item1.nextSibling){
+							if(item1.nextSibling.nodeType != 1){
+								item1 = item1.nextSibling;
+							}else{
+								item1.nextSibling.className = "active";
+								break;
+							}
+						}
+					}else if(item1 != null){
+						item1.parentNode.childNodes.forEach(function(item){
+							item.className = "";
+						});
+						while(item1.nextSibling){
+							if(item1.nextSibling.nodeType != 1){
+								item1 = item1.nextSibling;
+							}else{
+								item1.nextSibling.className = "active";
+								break;
+							}
+						}
+					}else if(item2 != null){
+						item2.parentNode.childNodes.forEach(function(item){
+							item.className = "";
+						});
+						while(item2.nextSibling){
+							if(item2.nextSibling.nodeType != 1){
+								item2 = item2.nextSibling;
+							}else{
+								item2.nextSibling.className = "active";
+								break;
+							}
+						}
+					}else{
+						var item1 = document.querySelector(".unselected-container").getElementsByTagName("li")[0];
+						if(item1 != null){
+							item1.className = "active";
+						}else{
+							var item2 = document.querySelector(".selected-container").getElementsByTagName("li")[0];
+							item2.className = "active";
+						}
+					}
+					break
+				default:
+					console.log("default");
+			}
+		}
 	</script>
 </body>
 </html>
