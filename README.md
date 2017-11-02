@@ -11,3 +11,5 @@
 
 6:wuziqi.html         基础版五子棋游戏，可以判断输赢
 
+7:redPacket.html      简单的红包生成器
+
